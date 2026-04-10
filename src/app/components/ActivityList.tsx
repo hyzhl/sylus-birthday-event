@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, MapPin, User, Tag, ExternalLink, X, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -30,17 +30,14 @@ export function ActivityList({ activities }: ActivityListProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  // 城市列表
   const cities = useMemo(() => {
     return Array.from(new Set(activities.map(a => a.city))).sort();
   }, [activities]);
 
-  // 类型列表
   const types = useMemo(() => {
     return Array.from(new Set(activities.map(a => a.type))).sort();
   }, [activities]);
 
-  // 筛选
   const filteredActivities = useMemo(() => {
     return activities.filter(activity => {
       const cityMatch = filterCity === 'all' || activity.city === filterCity;
@@ -54,7 +51,6 @@ export function ActivityList({ activities }: ActivityListProps) {
     });
   }, [activities, filterCity, filterType, searchQuery]);
 
-  // 分页
   const paginatedActivities = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
@@ -86,16 +82,14 @@ export function ActivityList({ activities }: ActivityListProps) {
   };
 
   return (
-    <section className="px-6 py-12 bg-black min-h-screen">
-      <div className="max-w-md mx-auto">
-        {/* 头部 - 已移除统计信息 */}
+    <section className="px-[20px] py-12 bg-black min-h-screen">
+      <div>
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-transparent">
             活动清单
           </h2>
         </div>
 
-        {/* 筛选器 - 使用原生 select 替代 Radix UI 组件 */}
         <div className="mb-6 space-y-3">
           <div className="flex items-center gap-2 text-sm text-gray-400 mb-3">
             <Filter className="w-4 h-4" />
@@ -103,7 +97,6 @@ export function ActivityList({ activities }: ActivityListProps) {
           </div>
           
           <div className="flex gap-3">
-            {/* 城市筛选 */}
             <select
               value={filterCity}
               onChange={(e) => handleFilterChange('city', e.target.value)}
@@ -115,7 +108,6 @@ export function ActivityList({ activities }: ActivityListProps) {
               ))}
             </select>
 
-            {/* 类型筛选 */}
             <select
               value={filterType}
               onChange={(e) => handleFilterChange('type', e.target.value)}
@@ -143,7 +135,6 @@ export function ActivityList({ activities }: ActivityListProps) {
             </button>
           </div>
 
-          {/* 搜索框 */}
           <AnimatePresence>
             {isSearchOpen && (
               <motion.div
@@ -165,7 +156,6 @@ export function ActivityList({ activities }: ActivityListProps) {
             )}
           </AnimatePresence>
 
-          {/* 已选筛选条件标签 */}
           {(filterCity !== 'all' || filterType !== 'all' || searchQuery !== '') && (
             <div className="flex items-center gap-2 flex-wrap">
               {filterCity !== 'all' && (
@@ -199,7 +189,6 @@ export function ActivityList({ activities }: ActivityListProps) {
           )}
         </div>
 
-        {/* 活动列表 */}
         <div className="space-y-3 mb-6">
           <AnimatePresence mode="popLayout">
             {paginatedActivities.map((activity, index) => (
@@ -236,7 +225,6 @@ export function ActivityList({ activities }: ActivityListProps) {
           </AnimatePresence>
         </div>
 
-        {/* 分页 */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between">
             <button
@@ -261,7 +249,6 @@ export function ActivityList({ activities }: ActivityListProps) {
           </div>
         )}
 
-        {/* 活动详情弹窗 */}
         <Dialog open={!!selectedActivity} onOpenChange={() => setSelectedActivity(null)}>
           <DialogContent className="bg-zinc-900 border-red-900/50 text-white max-w-[90vw] max-h-[80vh] overflow-y-auto">
             <DialogHeader>
